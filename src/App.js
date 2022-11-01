@@ -1,11 +1,10 @@
+import LogIn from "./components/LogIn";
+
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Start Program Here!
-        </p>
-      </header>
+    <div>
+      <h1>Backpacker Trip Companion</h1>
+      <LogIn/>
     </div>
   );
 }
