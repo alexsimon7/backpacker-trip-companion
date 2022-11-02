@@ -1,4 +1,7 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+puppeteer.use(StealthPlugin());
+
 const fs = require('fs');
 
 function delay(time) {
@@ -19,7 +22,9 @@ async function saveToJSON(productObject) {
 
 
 async function dataScrapper() {
-  const browser = await puppeteer.launch({headless: false});
+  let productArray = [];
+
+  const browser = await puppeteer.launch({headless: false, executablePath: '/opt/google/chrome/google-chrome'});
   const page = await browser.newPage();
 
   //setViewport fixed bug where page opened was smaller version w/o menu
@@ -28,16 +33,23 @@ async function dataScrapper() {
     height: 720,
   })
 
-  //set for each product individually, or create an array iterate?
-
   await page.goto('https://www.rei.com/c/backpacking-packs');
   await delay(2500);
 
-  let products = await page.$$eval('#search-results > ul > li > a:first-of-type', productArray => {
-    return productArray.map(element => element.getAttribute('href'));
+  let backpacks = await page.$$eval('#search-results > ul > li > a:first-of-type', productArray => {
+    return productArray.map(element => `https://www.rei.com${element.getAttribute('href')}`);
   });
 
-  console.log(products);
+  await page.goto('https://www.rei.com/c/backpacking-tents');
+  await delay(2500);
+
+  let tents = await page.$$eval('#search-results > ul > li > a:first-of-type', productArray => {
+    return productArray.map(element => `https://www.rei.com${element.getAttribute('href')}`);
+  });
+
+  productArray = productArray.concat(backpacks, tents);
+
+  console.log(productArray);
 
   await delay(2500);
 
