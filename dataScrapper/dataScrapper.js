@@ -1,9 +1,14 @@
 /*
 TODO:
-  Issue: Products that Span More Than One Page
-    Solution: a. Hit Button to Display 90 Products, b. Hit Bottom Button to Go to Next Page If Exists
-  Issue: Duplicate Code
-    Solution: Encapsulate into functions when program works
+  Have Array of Product Urls
+    Parse the Product Pages for:
+      1. Product Name
+      2. Product Weight
+    Potential Issues:
+      1. Products with Different Sizes
+    Question:
+      Can we get one page that encompasses most of the products and parse that page?
+        https://www.rei.com/c/camping-and-hiking?ir=category%3Acamping-and-hiking&r=c%3Bbest-use%3ABackpacking may work
 
 Input: None.
 Output: None. Create JSON FILE with scraped products (including names, sku?, and weight)
@@ -14,10 +19,9 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
 
 const fs = require('fs');
+const productURLGrabber = require('./components/productURLGrabber');
+const delay = require('./components/delay.js');
 
-function delay(time) {
-  return new Promise((resolve) => setTimeout(resolve, time));
-}
 
 async function saveToJSON(productObject) {
   const userJSON = fs.readFileSync(`${__dirname}/data/data.json`, 'utf-8');
@@ -33,76 +37,31 @@ async function saveToJSON(productObject) {
 
 
 async function dataScrapper() {
-  let productArray = [];
-
   const browser = await puppeteer.launch({headless: false, executablePath: '/opt/google/chrome/google-chrome'});
   const page = await browser.newPage();
 
-  //setViewport fixed bug where page opened was smaller version w/o menu
-  await page.setViewport({
-    width: 1280,
-    height: 720,
-  })
+  // await page.setViewport({
+  //   width: 1280,
+  //   height: 720,
+  // })
 
-  await page.goto('https://www.rei.com/c/backpacking-packs');
-  await delay(2500);
+  const arrayOfURLs = [
+    'https://www.rei.com/c/backpacking-packs',
+    'https://www.rei.com/c/backpacking-tents',
+    'https://www.rei.com/c/mens-sleeping-bags',
+    'https://www.rei.com/c/womens-sleeping-bags',
+    'https://www.rei.com/c/stoves-and-grills',
+    'https://www.rei.com/c/hammocks'
+  ]
 
-  let backpacks = await page.$$eval('#search-results > ul > li > a:first-of-type', productArray => {
-    return productArray.map(element => `https://www.rei.com${element.getAttribute('href')}`);
-  });
-
-  await page.goto('https://www.rei.com/c/backpacking-tents');
-  await delay(2500);
-
-  let tents = await page.$$eval('#search-results > ul > li > a:first-of-type', productArray => {
-    return productArray.map(element => `https://www.rei.com${element.getAttribute('href')}`);
-  });
-
-  await page.goto('https://www.rei.com/c/mens-sleeping-bags');
-  await delay(2500);
-
-  let mensBags = await page.$$eval('#search-results > ul > li > a:first-of-type', productArray => {
-    return productArray.map(element => `https://www.rei.com${element.getAttribute('href')}`);
-  });
-
-  await page.goto('https://www.rei.com/c/womens-sleeping-bags');
-  await delay(2500);
-
-  let womenBags = await page.$$eval('#search-results > ul > li > a:first-of-type', productArray => {
-    return productArray.map(element => `https://www.rei.com${element.getAttribute('href')}`);
-  });
-
-  await page.goto('https://www.rei.com/c/sleeping-pads');
-  await delay(2500);
-
-  let sleepingPads = await page.$$eval('#search-results > ul > li > a:first-of-type', productArray => {
-    return productArray.map(element => `https://www.rei.com${element.getAttribute('href')}`);
-  });
-
-  await page.goto('https://www.rei.com/c/stoves-and-grills');
-  await delay(2500);
-
-  let stoves = await page.$$eval('#search-results > ul > li > a:first-of-type', productArray => {
-    return productArray.map(element => `https://www.rei.com${element.getAttribute('href')}`);
-  });
-
-  await page.goto('https://www.rei.com/c/hammocks');
-  await delay(2500);
-
-  let hammocks = await page.$$eval('#search-results > ul > li > a:first-of-type', productArray => {
-    return productArray.map(element => `https://www.rei.com${element.getAttribute('href')}`);
-  });
-
-
-
-
-  productArray = productArray.concat(backpacks, tents, mensBags, womenBags, sleepingPads, stoves, hammocks);
-
-  console.log(productArray);
+  const listOfProductURLs = await productURLGrabber(page, arrayOfURLs);
+  console.log(listOfProductURLs);
 
   await delay(2500);
-
   await browser.close();
 }
 
 dataScrapper();
+
+
+
