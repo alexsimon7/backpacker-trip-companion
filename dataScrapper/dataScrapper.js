@@ -20,6 +20,7 @@ puppeteer.use(StealthPlugin());
 
 const fs = require('fs');
 const productURLGrabber = require('./components/productURLGrabber');
+const productNameAndWeightGrabber = require('./components/productNameAndWeightGrabber.js');
 const delay = require('./components/delay.js');
 
 
@@ -45,17 +46,22 @@ async function dataScrapper() {
   //   height: 720,
   // })
 
-  const arrayOfURLs = [
-    'https://www.rei.com/c/backpacking-packs',
-    'https://www.rei.com/c/backpacking-tents',
-    'https://www.rei.com/c/mens-sleeping-bags',
-    'https://www.rei.com/c/womens-sleeping-bags',
-    'https://www.rei.com/c/stoves-and-grills',
-    'https://www.rei.com/c/hammocks'
-  ]
+  // const arrayOfURLs = [
+  //   'https://www.rei.com/c/backpacking-packs',
+  //   'https://www.rei.com/c/backpacking-tents',
+  //   'https://www.rei.com/c/mens-sleeping-bags',
+  //   'https://www.rei.com/c/womens-sleeping-bags',
+  //   'https://www.rei.com/c/stoves-and-grills',
+  //   'https://www.rei.com/c/hammocks'
+  // ]
+  //
+  // const listOfProductURLs = await productURLGrabber(page, arrayOfURLs);
+  // console.log(listOfProductURLs);
 
-  const listOfProductURLs = await productURLGrabber(page, arrayOfURLs);
-  console.log(listOfProductURLs);
+  let arrayOfProductURLs = ['https://www.rei.com/product/168251/rei-co-op-trailbreak-60-pack-mens'];
+  const listOfProductsWithInfo = await productNameAndWeightGrabber(page, arrayOfProductURLs)
+  console.log(listOfProductsWithInfo);
+
 
   await delay(2500);
   await browser.close();
