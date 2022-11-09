@@ -46,20 +46,25 @@ async function dataScrapper() {
   //   height: 720,
   // })
 
-  // const arrayOfURLs = [
-  //   'https://www.rei.com/c/backpacking-packs',
-  //   'https://www.rei.com/c/backpacking-tents',
-  //   'https://www.rei.com/c/mens-sleeping-bags',
-  //   'https://www.rei.com/c/womens-sleeping-bags',
-  //   'https://www.rei.com/c/stoves-and-grills',
-  //   'https://www.rei.com/c/hammocks'
-  // ]
-  //
-  // const listOfProductURLs = await productURLGrabber(page, arrayOfURLs);
+  const arrayOfURLs = [
+    // 'https://www.rei.com/c/backpacking-packs',
+    // 'https://www.rei.com/c/backpacking-tents',
+    'https://www.rei.com/c/mens-sleeping-bags',
+    // 'https://www.rei.com/c/womens-sleeping-bags',
+    // 'https://www.rei.com/c/stoves-and-grills',
+    // 'https://www.rei.com/c/hammocks'
+  ]
+
+  const listOfProductURLs = await productURLGrabber(page, arrayOfURLs);
   // console.log(listOfProductURLs);
 
-  let arrayOfProductURLs = ['https://www.rei.com/product/168251/rei-co-op-trailbreak-60-pack-mens'];
-  const listOfProductsWithInfo = await productNameAndWeightGrabber(page, arrayOfProductURLs)
+  // let arrayOfProductURLs = [
+  //   'https://www.rei.com/product/168251/rei-co-op-trailbreak-60-pack-mens', //Product With No Size and One Weight (referred to exactly)
+  //   'https://www.rei.com/product/187507/kelty-cosmic-20-sleeping-bag-mens', //Product With Sizes and Multiple Weights Under Weight (referred to exactly)
+  //   'https://www.rei.com/product/164383/rei-co-op-flexlite-camp-boss-chair', //Product with Weight (referred to exactly) and other Weights related to product
+  //   'https://www.rei.com/product/168431/rei-co-op-passage-1-tent-with-footprint', //Product with Weight (referred differently)
+  // ];
+  const listOfProductsWithInfo = await productNameAndWeightGrabber(page, listOfProductURLs)
   console.log(listOfProductsWithInfo);
 
 
