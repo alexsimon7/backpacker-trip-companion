@@ -24,3 +24,4 @@ yarn-error.log*
 /unused/
 /dataScrapper/data/
 /dataScrapper/logs/
+/dataScrapper/data-backup/

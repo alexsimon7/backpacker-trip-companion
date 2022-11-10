@@ -24,52 +24,82 @@ const productNameAndWeightGrabber = require('./components/productNameAndWeightGr
 const delay = require('./components/delay.js');
 
 
-async function saveToJSON(productObject) {
-  const userJSON = fs.readFileSync(`${__dirname}/data/data.json`, 'utf-8');
-  const userData = JSON.parse(userJSON);
-
-  for (let element in productObject) {
-    userData.push(productObject[element]);
-  }
-
-  const toSave = JSON.stringify(userData);
-  fs.writeFileSync(`${__dirname}/data/data.json`, toSave, 'utf-8');
+async function saveToJSON(productObject, fileNameString) {
+  const productData = JSON.stringify(productObject);
+  fs.writeFileSync(`${__dirname}/logs/${fileNameString}.json`, productData, 'utf-8');
 }
 
 
 async function dataScrapper() {
-  const browser = await puppeteer.launch({headless: false, executablePath: '/opt/google/chrome/google-chrome'});
-  const page = await browser.newPage();
+  // const browser = await puppeteer.launch({headless: false, executablePath: '/opt/google/chrome/google-chrome'});
+  // const page = await browser.newPage();
 
   // await page.setViewport({
   //   width: 1280,
   //   height: 720,
   // })
 
-  const arrayOfURLs = [
+  // const arrayOfURLs = [
+    // 'https://www.rei.com/b/cocoon/c/camping-and-hiking?ir=category%3Acamping-and-hiking&r=c%3Bbest-use%3ABackpacking%3Bb',
+    // 'https://www.rei.com/c/camping-and-hiking?ir=category%3Acamping-and-hiking&r=c%3Bbest-use%3ABackpacking',
     // 'https://www.rei.com/c/backpacking-packs',
     // 'https://www.rei.com/c/backpacking-tents',
-    'https://www.rei.com/c/mens-sleeping-bags',
+    // 'https://www.rei.com/c/mens-sleeping-bags',
     // 'https://www.rei.com/c/womens-sleeping-bags',
     // 'https://www.rei.com/c/stoves-and-grills',
     // 'https://www.rei.com/c/hammocks'
-  ]
+  // ]
 
-  const listOfProductURLs = await productURLGrabber(page, arrayOfURLs);
-  // console.log(listOfProductURLs);
+  // const listOfProductURLs = await productURLGrabber(page, arrayOfURLs);
+  // await saveToJSON(listOfProductURLs, 'backpackURLs');
 
-  // let arrayOfProductURLs = [
-  //   'https://www.rei.com/product/168251/rei-co-op-trailbreak-60-pack-mens', //Product With No Size and One Weight (referred to exactly)
-  //   'https://www.rei.com/product/187507/kelty-cosmic-20-sleeping-bag-mens', //Product With Sizes and Multiple Weights Under Weight (referred to exactly)
-  //   'https://www.rei.com/product/164383/rei-co-op-flexlite-camp-boss-chair', //Product with Weight (referred to exactly) and other Weights related to product
-  //   'https://www.rei.com/product/168431/rei-co-op-passage-1-tent-with-footprint', //Product with Weight (referred differently)
-  // ];
-  const listOfProductsWithInfo = await productNameAndWeightGrabber(page, listOfProductURLs)
-  console.log(listOfProductsWithInfo);
+  //Read in URLS
 
 
-  await delay(2500);
-  await browser.close();
+  const productURLsJSON = fs.readFileSync(`${__dirname}/data-backup/productURLs.json`, 'utf-8');
+  const productURLs = JSON.parse(productURLsJSON);
+
+  let startPoint = 400; //start at 400
+
+  do {
+    const browser = await puppeteer.launch({headless: false, executablePath: '/opt/google/chrome/google-chrome'});
+    const page = await browser.newPage();
+
+    const listOfProductsWithInfo = await productNameAndWeightGrabber(page, productURLs.slice(startPoint, (startPoint + 100)));
+
+    await saveToJSON(listOfProductsWithInfo, `${startPoint}-${startPoint + 100}`);
+
+    await delay(2500);
+    await browser.close();
+
+    startPoint += 100;
+  } while (startPoint < 1300);
+  //Iterate Over URL Chunks
+
+
+  // const browser = await puppeteer.launch({headless: false, executablePath: '/opt/google/chrome/google-chrome'});
+  // const page = await browser.newPage();
+  //
+  // const listOfProductsWithInfo = await productNameAndWeightGrabber(page, listOfProductURLs)
+  //
+  // await saveToJSON(listOfProductsWithInfo, 'mensackpackData');
+  //
+  //
+  // await delay(2500);
+  // await browser.close();
+
+
+
+  // const browser = await puppeteer.launch({headless: false, executablePath: '/opt/google/chrome/google-chrome'});
+  // const page = await browser.newPage();
+  //
+  // const listOfProductsWithInfo = await productNameAndWeightGrabber(page, listOfProductURLs)
+  //
+  // await saveToJSON(listOfProductsWithInfo, 'mensackpackData');
+  //
+  //
+  // await delay(2500);
+  // await browser.close();
 }
 
 dataScrapper();
