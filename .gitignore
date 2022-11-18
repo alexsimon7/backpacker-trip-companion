@@ -25,3 +25,6 @@ yarn-error.log*
 /dataScrapper/data/
 /dataScrapper/logs/
 /dataScrapper/data-backup/
+/dataScrapper/clean-data/
+/product-weight-api/src/database/db.json
+/product-weight-api/src/database/dbTest.json
