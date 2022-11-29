@@ -4,8 +4,8 @@ const getAllProducts = () => {
   return productWeight.getAllProducts();
 }
 
-const getAProduct = () => {
-  return;
+const getAProduct = (aProduct) => {
+  return productWeight.getAProduct(aProduct);
 }
 
 const createAProduct = (newProduct) => {
@@ -17,8 +17,8 @@ const createAProduct = (newProduct) => {
   return createdProduct;
 }
 
-const updateAProduct = () => {
-  return;
+const updateAProduct = (productName, changes) => {
+  return productWeight.updateAProduct(productName, changes)
 }
 
 const deleteAProduct = () => {

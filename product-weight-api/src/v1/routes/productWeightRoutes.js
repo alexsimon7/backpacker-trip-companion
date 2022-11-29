@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/', getAllProducts);
 
-router.get('/:productId', getAProduct);
+router.get('/:productName', getAProduct);
 
 router.post('/',
   // body('name').isAlphanumeric('en-US', {ignore: '.'}),
@@ -14,7 +14,7 @@ router.post('/',
   createAProduct
 );
 
-router.patch('/:productId', updateAProduct);
+router.patch('/:productName', updateAProduct);
 
 router.delete('/:productId', deleteAProduct);
 

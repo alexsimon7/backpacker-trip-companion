@@ -7,8 +7,13 @@ const getAllProducts = (req, res) => {
 }
 
 const getAProduct = (req, res) => {
-  const aProduct = productWeightService.getAProduct();
-  res.send("Get A Product.");
+  const { params: { productName } } = req;
+  if (!productName){
+    return;
+  }
+
+  const aProduct = productWeightService.getAProduct(productName);
+  res.send({ status: "OK", data: aProduct});
 }
 
 const createAProduct = (req, res) => {
@@ -29,8 +34,14 @@ const createAProduct = (req, res) => {
 }
 
 const updateAProduct = (req, res) => {
-  const updatedProduct = productWeightService.updateAProduct();
-  res.send("Update A Product.");
+  const { body, params: { productName } } = req;
+
+  if (!productName) {
+    return;
+  }
+
+  const updatedProduct = productWeightService.updateAProduct(productName, body);
+  res.send({ status: "OK", data: updatedProduct});
 }
 
 const deleteAProduct = (req, res) => {
